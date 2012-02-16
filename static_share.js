@@ -19,6 +19,21 @@ var findShareDialog = function(currentNode) {
   if (!shareDialog) {
     return false;
   }
+  // Discover share box
+  var isItReallyShared = function() {
+    var buttons = currentNode.querySelectorAll('span');
+    for (var button in buttons) {
+      if (buttons[button].innerText == "Share this post") {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  if (!isItReallyShared()) {
+    return false;
+  }
+  
   currentNode.classList.add(INJECTED_CLASSNAME);
   currentNode.style.top = '0px';
   currentNode.style.left = ((window.innerWidth - currentNode.clientWidth) / 2) + 'px';
