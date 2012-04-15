@@ -6,38 +6,26 @@
 // ==/UserScript==
 var INJECTED_CLASSNAME = 'crx-lazy-box';
 
-var onDOMNodeInserted = function(e) {
-  var currentNode = e.target;
-  if (currentNode.nodeType == Node.ELEMENT_NODE && currentNode.className != '' &&
-      !currentNode.classList.contains(INJECTED_CLASSNAME)) {
-    findShareDialog(currentNode);
-  }
-};
-
-var findShareDialog = function(currentNode) {
-  var shareDialog = currentNode.querySelector('div[role="dialog"] > div > span');
-  if (!shareDialog) {
-    return false;
-  }
-  // Discover share box
-  var isItReallyShared = function() {
-    var buttons = currentNode.querySelectorAll('span');
-    for (var button in buttons) {
-      if (buttons[button].innerText == "Share this post") {
-        return true;
+// Listen on sharebox creations.
+var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+var observer = new MutationObserver(function(mutations) {
+  if (mutations.length === 4) {
+    var addedNodes = mutations[0].addedNodes;
+    if (addedNodes.length === 1) {
+      var currentNode = addedNodes[0];
+      console.log(currentNode);
+      var shareButtonDOM = currentNode.querySelector('div[guidedhelpid="sharebutton"]');
+      if (shareButtonDOM) {
+        var max_height = window.innerHeight;
+        currentNode.classList.add(INJECTED_CLASSNAME);
+        currentNode.style.top = '20px';
+        currentNode.style.left = '20px';
+        currentNode.style.bottom = '20px';
+        currentNode.style.width = (window.innerWidth - 140) + 'px';
+        currentNode.style.overflow = 'scroll';
+        currentNode.style.position = 'fixed';
       }
     }
-    return false;
   }
-  
-  if (!isItReallyShared()) {
-    return false;
-  }
-  
-  currentNode.classList.add(INJECTED_CLASSNAME);
-  currentNode.style.top = '0px';
-  currentNode.style.left = ((window.innerWidth - currentNode.clientWidth) / 2) + 'px';
-  currentNode.style.position = 'fixed';
-};
-
-document.body.addEventListener('DOMNodeInserted', onDOMNodeInserted, false);
+});
+observer.observe(document.body, { childList: true });
