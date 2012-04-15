@@ -24,6 +24,14 @@ var observer = new MutationObserver(function(mutations) {
         currentNode.style.width = (window.innerWidth - 140) + 'px';
         currentNode.style.overflow = 'scroll';
         currentNode.style.position = 'fixed';
+        
+        // Add me!
+        var a = document.createElement('a');
+        a.href = 'https://plus.google.com/116805285176805120365/about';
+        a.innerText = 'Static Share by Mohamed Mansour'
+        a.style.float = 'right';
+        a.target = '_blank';
+        currentNode.appendChild(a);
       }
     }
   }
